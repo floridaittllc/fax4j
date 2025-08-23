@@ -80,13 +80,22 @@ public abstract class AbstractFaxBridge implements FaxBridge {
         // set flag
         this.initialized = true;
 
+        // merge provided configuration with environment variables
+        Properties effectiveConfiguration = new Properties();
+        if (configuration != null) {
+            effectiveConfiguration.putAll(configuration);
+        }
+
+        // load HylaFAX configuration from environment variables
+        org.fax4j.spi.hylafax.HylaFaxEnvironmentConfiguration.load(effectiveConfiguration);
+
         // get configuration
         Map<String, String> map = new HashMap<String, String>();
-        SpiUtil.copyPropertiesToMap(configuration, map);
+        SpiUtil.copyPropertiesToMap(effectiveConfiguration, map);
         this.bridgeConfiguration = new ConfigurationHolderImpl(map);
 
         // create fax client
-        this.faxClient = FaxClientFactory.createFaxClient(type, configuration);
+        this.faxClient = FaxClientFactory.createFaxClient(type, effectiveConfiguration);
 
         // get logger
         LoggerManager loggerManager = LoggerManager.getInstance();
