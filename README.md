@@ -73,6 +73,23 @@ System.out.println("Fax job submitted, ID: "+faxJob.getID());
 
 You can see more examples and a tutorial at: [javadocs](https://sagiegurari.github.io/fax4j/apidocs/overview-summary.html#overview_description)
 
+## HTTP Fax Server
+
+An example Spring Boot server is available under `server/http` exposing a minimal HTTP API on top of fax4j.
+
+* `POST /fax` – submit a fax job using multipart form data. Expected fields include at least `file`, `filename` and `targetaddress`.
+* `GET /fax/{id}` – query the status of a previously submitted fax job.
+
+Sample requests:
+
+```bash
+# submit a fax
+curl -F "file=@/path/to/myfax.txt" -F "filename=myfax.txt" -F "targetaddress=555-555" http://localhost:8080/fax
+
+# check status
+curl http://localhost:8080/fax/<fax-id>
+```
+
 ## Building from Sources
 
 The fax4j library comes with a maven pom.xml which can be used to build the Java layer of the library.
