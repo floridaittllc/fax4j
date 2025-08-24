@@ -47,6 +47,22 @@ The fax bridge enables to transform emails servers, web servers and more into an
 The [x2fax](https://github.com/sagiegurari/x2fax) sub project provides a set of standalone servers and deployable components which enable to provide x2fax services out of the box.<br>
 The [x2fax](https://github.com/sagiegurari/x2fax) contains built-in email component to enhance email servers to provide email2fax services and HTTP servers and WARs to convert any Java web server into a web2fax bridge.
 
+## HylaFAX Environment Variables
+
+The HylaFAX SPI can be configured via environment variables. During service
+startup the library reads the following variables and maps them to fax4j
+properties, overriding any values provided in configuration files:
+
+| Environment Variable | fax4j Property | Default |
+| -------------------- | -------------- | ------- |
+| `HYFAX_HOST` | `org.fax4j.spi.hylafax.host` | *(none)* |
+| `HYFAX_PORT` | `org.fax4j.spi.hylafax.port` | `4559` |
+| `HYFAX_USER` | `org.fax4j.spi.hylafax.user` | *(none)* |
+| `HYFAX_PASS` | `org.fax4j.spi.hylafax.password` | *(none)* |
+| `HYFAX_ADMIN` | `org.fax4j.spi.hylafax.admin` | `false` |
+| `HYFAX_MODE` | `org.fax4j.spi.hylafax.mode` | `Z` |
+| `HYFAX_TYPE` | `org.fax4j.spi.hylafax.type` | `A` |
+
 ## Example Usage
 
 ```java
