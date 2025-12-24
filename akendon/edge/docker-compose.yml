@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  mqtt:
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+
+  frigate:
+    image: ${FRIGATE_IMAGE:-ghcr.io/blakeblackshear/frigate:stable}
+    restart: unless-stopped
+    privileged: true
+    environment:
+      - FRIGATE_RTSP_PASSWORD=${FRIGATE_RTSP_PASSWORD:-changeme}
+    volumes:
+      - ./frigate/config.yml:/config/config.yml:ro
+      - ./frigate/media:/media/frigate
+    depends_on:
+      - mqtt
+
+  edge-agent:
+    build: ./edge-agent
+    restart: unless-stopped
+    environment:
+      EDGE_AGENT_LOG: INFO
+      CLOUD_API_URL: http://cloud-api:8000
+    command: ["python", "-m", "app.main", "--cloud-url", "http://cloud-api:8000", "--config", "/opt/edge/config.json", "--skip-compose"]
+    volumes:
+      - ./edge-agent/app:/app
+      - ./frigate:/opt/edge/frigate
+      - ./edge-agent/app/sample_config.json:/opt/edge/config.json:ro
+    depends_on:
+      - mqtt
+      - frigate
+      - cloud-api
+
+  cloud-api:
+    build: ../cloud/cloud-api
+    restart: unless-stopped
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8000
+    volumes:
+      - ../cloud/cloud-api:/app
+    working_dir: /app
+    command: ["python", "main.py"]
+    ports:
+      - "8000:8000"

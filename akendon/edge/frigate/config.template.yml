@@ -1,0 +1,39 @@
+mqtt:
+  host: {{ mqtt.host }}
+  port: {{ mqtt.port }}
+  {% if mqtt.username %}user: {{ mqtt.username }}
+  password: {{ mqtt.password }}
+  {% endif %}topic_prefix: {{ mqtt.topic_prefix }}
+
+detectors:
+  cpu1:
+    type: cpu
+
+cameras:
+{% for camera in cameras %}
+  {{ camera.camera_id }}:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: {{ camera.rtsp_url }}
+          roles:
+            - detect
+            - record
+    detect:
+      enabled: {{ camera.detect }}
+    record:
+      enabled: {{ camera.record }}
+      retain:
+        days: {{ camera.clips_retention_days }}
+        mode: motion
+    snapshots:
+      enabled: true
+      retain:
+        default: {{ camera.snapshots_retention_days }}
+    {% if camera.zones %}zones:
+      {% for zone in camera.zones %}
+      {{ zone.name }}:
+        coordinates: {{ zone.coordinates }}
+      {% endfor %}
+    {% endif %}
+{% endfor %}

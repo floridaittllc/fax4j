@@ -1,0 +1,32 @@
+mqtt:
+  host: mqtt
+  port: 1883
+  topic_prefix: frigate
+
+detectors:
+  cpu1:
+    type: cpu
+
+cameras:
+  wyze-rtsp-1:
+    enabled: true
+    ffmpeg:
+      inputs:
+        - path: rtsp://user:password@wyze-rtsp-stream/stream
+          roles:
+            - detect
+            - record
+    detect:
+      enabled: true
+    record:
+      enabled: true
+      retain:
+        days: 1
+        mode: motion
+    snapshots:
+      enabled: true
+      retain:
+        default: 1
+    zones:
+      front_porch:
+        coordinates: [0,0, 1,0, 1,1, 0,1]

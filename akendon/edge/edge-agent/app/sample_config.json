@@ -1,0 +1,31 @@
+{
+  "site_id": "demo-site-001",
+  "device_id": "edge-device-001",
+  "mqtt": {
+    "host": "mqtt",
+    "port": 1883,
+    "username": "",
+    "password": "",
+    "topic_prefix": "frigate"
+  },
+  "cameras": [
+    {
+      "camera_id": "wyze-rtsp-1",
+      "name": "Wyze Cam v3 (RTSP)",
+      "rtsp_url": "rtsp://user:password@wyze-rtsp-stream/stream",
+      "detect": true,
+      "record": true,
+      "snapshots_retention_days": 1,
+      "clips_retention_days": 1,
+      "zones": [
+        {
+          "name": "front_porch",
+          "coordinates": ["0,0", "1,0", "1,1", "0,1"]
+        }
+      ]
+    }
+  ],
+  "frigate_template_path": "/opt/edge/frigate/config.template.yml",
+  "frigate_config_output": "/opt/edge/frigate/config.yml",
+  "frigate_compose_file": "/opt/edge/docker-compose.yml"
+}
